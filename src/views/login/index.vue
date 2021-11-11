@@ -33,7 +33,7 @@ function submitForm() {
     // 定时器模拟登录
     setTimeout(() => {
       // 模拟信息存储到本地
-      sessionStorage.setItem('user', JSON.stringify({ name, pwd }))
+      localStorage.setItem('user', JSON.stringify({ name, pwd }))
       // 跳转到上一次访问的页面 如果用户直接进入登录页面，那么就跳转到 '/'首页
       const path: string = (route.query as { url?: string }).url || '/'
       router.push(path)

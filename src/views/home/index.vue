@@ -7,58 +7,47 @@
     </el-row>
     <el-row>
       <el-col :span="4">
+        <el-radio-group v-model="isCollapse" style="margin-bottom: 20px">
+          <el-radio-button :label="false">expand</el-radio-button>
+          <el-radio-button :label="true">collapse</el-radio-button>
+        </el-radio-group>
         <el-menu
-          :uniqueOpened="true"
           default-active="2"
-          class="menu-wrap"
-          background-color="#545c64"
-          text-color="#fff"
-          active-text-color="#ffd04b"
+          class="el-menu-vertical-demo"
+          :collapse="isCollapse"
+          @open="handleOpen"
+          @close="handleClose"
         >
-          <el-submenu index="1">
+          <el-sub-menu index="1">
             <template #title>
-              <i class="el-icon-location"></i>
-              <span>导航一</span>
+              <el-icon><location /></el-icon>
+              <span>Navigator One</span>
             </template>
             <el-menu-item-group>
-              <template #title>分组一</template>
-              <el-menu-item index="1-1">选项1</el-menu-item>
-              <el-menu-item index="1-2">选项2</el-menu-item>
+              <template #title><span>Group One</span></template>
+              <el-menu-item index="1-1">item one</el-menu-item>
+              <el-menu-item index="1-2">item two</el-menu-item>
             </el-menu-item-group>
-            <el-menu-item-group title="分组2">
-              <el-menu-item index="1-3">选项3</el-menu-item>
+            <el-menu-item-group title="Group Two">
+              <el-menu-item index="1-3">item three</el-menu-item>
             </el-menu-item-group>
-            <el-submenu index="1-4">
-              <template #title>选项4</template>
-              <el-menu-item index="1-4-1">选项1</el-menu-item>
-            </el-submenu>
-          </el-submenu>
+            <el-sub-menu index="1-4">
+              <template #title><span>item four</span></template>
+              <el-menu-item index="1-4-1">item one</el-menu-item>
+            </el-sub-menu>
+          </el-sub-menu>
           <el-menu-item index="2">
-            <i class="el-icon-menu"></i>
-            <template #title>导航二</template>
+            <el-icon><icon-menu /></el-icon>
+            <template #title>Navigator Two</template>
           </el-menu-item>
           <el-menu-item index="3" disabled>
-            <i class="el-icon-document"></i>
-            <template #title>导航三</template>
+            <el-icon><document /></el-icon>
+            <template #title>Navigator Three</template>
           </el-menu-item>
           <el-menu-item index="4">
-            <i class="el-icon-setting"></i>
-            <template #title>导航四</template>
+            <el-icon><setting /></el-icon>
+            <template #title>Navigator Four</template>
           </el-menu-item>
-          <el-submenu index="5">
-            <template #title>
-              <i class="el-icon-location"></i>
-              <span>导航一</span>
-            </template>
-            <el-menu-item-group>
-              <template #title>分组一</template>
-              <el-menu-item index="5-1">选项1</el-menu-item>
-              <el-menu-item index="5-2">选项2</el-menu-item>
-            </el-menu-item-group>
-            <el-menu-item-group title="分组2">
-              <el-menu-item index="5-3">选项3</el-menu-item>
-            </el-menu-item-group>
-          </el-submenu>
         </el-menu>
       </el-col>
       <el-col :span="20" class="pdl28">
@@ -82,7 +71,13 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { reactive } from 'vue'
+import { ref, reactive } from 'vue'
+import {
+  Location,
+  Document,
+  Menu as IconMenu,
+  Setting,
+} from '@element-plus/icons'
 interface User {
   name: string
   pwd: string
@@ -94,7 +89,16 @@ interface Table {
   address: string
 }
 
-const user: string | null = sessionStorage.getItem('user')
+const isCollapse = ref(false)
+const handleOpen = (key: string, keyPath: string[]) => {
+  console.log(key, keyPath)
+}
+const handleClose = ((index: string, indexPath: string[]) => {
+  console.log(index, indexPath)
+})
+
+const user: string | null = localStorage.getItem('user')
+
 const userName: string | null = user && (JSON.parse(user) as User).name
 const tableData = reactive<Table[]>([
   {
@@ -120,6 +124,10 @@ const tableData = reactive<Table[]>([
 ])
 </script>
 <style lang="less" scoped>
+.el-menu-vertical-demo:not(.el-menu--collapse) {
+  width: 200px;
+  min-height: 400px;
+}
 .layout-head {
   display: flex;
   flex-direction: row;
