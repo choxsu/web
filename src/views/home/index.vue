@@ -30,15 +30,16 @@
           </n-layout-sider>
           <n-layout>
             <n-grid :cols="24">
-              <n-gi :span="1">
-                <n-switch class="pdt28 pdb28 pdl14" v-model:value="collapsed" />
+              <n-gi :span="3">
+                <n-switch class="pdt28 pdb28 pdl14" v-model:value="collapsed">
+                  <template #checked>已折叠</template>
+                  <template #unchecked>已展开</template>
+                </n-switch>
               </n-gi>
-              <n-gi :span="23">
+              <n-gi :span="20">
                 <n-breadcrumb separator="/" class="pdt28 pdb28">
                   <n-breadcrumb-item href="/">首页</n-breadcrumb-item>
-                  <n-breadcrumb-item
-                    ><a href="/">活动管理</a></n-breadcrumb-item
-                  >
+                  <n-breadcrumb-item><a href="/">活动管理</a></n-breadcrumb-item>
                   <n-breadcrumb-item>活动列表</n-breadcrumb-item>
                   <n-breadcrumb-item>活动详情</n-breadcrumb-item>
                 </n-breadcrumb>

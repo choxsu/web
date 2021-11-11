@@ -27,11 +27,9 @@ const formRef = ref(null)
 
 const router = useRouter()
 const route = useRoute()
-const message = useMessage()
 const notification = useNotification()
 function submitForm() {
   const { name, pwd } = form.value
-  console.log(form.value)
   if (name && pwd) {
     // 定时器模拟登录
     setTimeout(() => {
