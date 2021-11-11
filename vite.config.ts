@@ -1,8 +1,8 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 // 按需加载包
-// import Components from 'unplugin-vue-components/vite'
-// import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
+import Components from 'unplugin-vue-components/vite'
+import { NaiveUiResolver } from 'unplugin-vue-components/resolvers'
 
 // vuejsx支持
 import vueJsx from "@vitejs/plugin-vue-jsx"
@@ -35,8 +35,8 @@ export default defineConfig({
   plugins: [
     vue(),
     vueJsx(),
-    // Components({
-    //   resolvers: [ElementPlusResolver()],
-    // })
+    Components({
+      resolvers: [NaiveUiResolver()],
+    })
   ]
 })

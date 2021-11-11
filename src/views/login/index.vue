@@ -1,34 +1,37 @@
 <template>
-  <el-form status-icon label-width="100px" class="login-form">
-    <el-form-item label="用户名">
-      <el-input v-model="form.name"></el-input>
-    </el-form-item>
-    <el-form-item label="密码">
-      <el-input type="password" v-model="form.pwd"></el-input>
-    </el-form-item>
-    <el-form-item>
-      <el-button class="block" type="primary" @click="submitForm"
-        >提交</el-button
-      >
-    </el-form-item>
-  </el-form>
+  <n-form :model="form" ref="formRef" label-width="100px" class="login-form">
+    <n-form-item label="用户名">
+      <n-input v-model:value="form.name" placeholder="请输入用户名"></n-input>
+    </n-form-item>
+    <n-form-item label="密码">
+      <n-input type="password" placeholder="请输入密码" v-model:value="form.pwd"></n-input>
+    </n-form-item>
+    <n-form-item>
+      <n-button class="block" type="primary" @click="submitForm">提交</n-button>
+    </n-form-item>
+  </n-form>
 </template>
 <script lang="ts" setup>
-import { reactive } from 'vue'
+import { ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import { ElMessage } from 'element-plus'
+import { useMessage, useNotification } from 'naive-ui'
 interface Form {
   name: string
   pwd: string
 }
-const form = reactive<Form>({
+const form = ref<Form>({
   name: '',
   pwd: '',
 })
+const formRef = ref(null)
+
 const router = useRouter()
 const route = useRoute()
+const message = useMessage()
+const notification = useNotification()
 function submitForm() {
-  const { name, pwd } = form
+  const { name, pwd } = form.value
+  console.log(form.value)
   if (name && pwd) {
     // 定时器模拟登录
     setTimeout(() => {
@@ -39,7 +42,11 @@ function submitForm() {
       router.push(path)
     })
   } else {
-    ElMessage.error('用户名密码不能🙅‍♀️为空')
+    notification['error']({
+      content: '用户名或密码不能🙅‍♀️为空',
+      meta: '温馨提示',
+      duration: 2500,
+    })
   }
 }
 </script>

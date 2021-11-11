@@ -1,83 +1,84 @@
 <template>
-  <div>
-    <el-row>
-      <el-col :span="24"
-        ><div class="layout-head pdlr28">{{ userName || '--' }}</div></el-col
-      >
-    </el-row>
-    <el-row>
-      <el-col :span="4">
-        <el-radio-group v-model="isCollapse" style="margin-bottom: 20px">
-          <el-radio-button :label="false">expand</el-radio-button>
-          <el-radio-button :label="true">collapse</el-radio-button>
-        </el-radio-group>
-        <el-menu
-          default-active="2"
-          class="el-menu-vertical-demo"
-          :collapse="isCollapse"
-          @open="handleOpen"
-          @close="handleClose"
-        >
-          <el-sub-menu index="1">
-            <template #title>
-              <el-icon><location /></el-icon>
-              <span>Navigator One</span>
-            </template>
-            <el-menu-item-group>
-              <template #title><span>Group One</span></template>
-              <el-menu-item index="1-1">item one</el-menu-item>
-              <el-menu-item index="1-2">item two</el-menu-item>
-            </el-menu-item-group>
-            <el-menu-item-group title="Group Two">
-              <el-menu-item index="1-3">item three</el-menu-item>
-            </el-menu-item-group>
-            <el-sub-menu index="1-4">
-              <template #title><span>item four</span></template>
-              <el-menu-item index="1-4-1">item one</el-menu-item>
-            </el-sub-menu>
-          </el-sub-menu>
-          <el-menu-item index="2">
-            <el-icon><icon-menu /></el-icon>
-            <template #title>Navigator Two</template>
-          </el-menu-item>
-          <el-menu-item index="3" disabled>
-            <el-icon><document /></el-icon>
-            <template #title>Navigator Three</template>
-          </el-menu-item>
-          <el-menu-item index="4">
-            <el-icon><setting /></el-icon>
-            <template #title>Navigator Four</template>
-          </el-menu-item>
-        </el-menu>
-      </el-col>
-      <el-col :span="20" class="pdl28">
-        <el-breadcrumb separator="/" class="pdt28 pdb28">
-          <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-          <el-breadcrumb-item><a href="/">活动管理</a></el-breadcrumb-item>
-          <el-breadcrumb-item>活动列表</el-breadcrumb-item>
-          <el-breadcrumb-item>活动详情</el-breadcrumb-item>
-        </el-breadcrumb>
-        <div class="com">
-          <el-table :data="tableData" style="width: 100%">
-            <el-table-column prop="date" label="日期" width="180">
-            </el-table-column>
-            <el-table-column prop="name" label="姓名" width="180">
-            </el-table-column>
-            <el-table-column prop="address" label="地址"> </el-table-column>
-          </el-table>
-        </div>
-      </el-col>
-    </el-row>
+  <div class="app-layout">
+    <n-grid>
+      <n-gi :span="24">
+        <div class="layout-head pdlr28">{{ userName || '--' }}</div>
+      </n-gi>
+    </n-grid>
+    <n-grid x-gap="12">
+      <n-gi :span="24">
+        <n-layout has-sider class="menu-wrap">
+          <n-layout-sider
+            bordered
+            collapse-mode="width"
+            :collapsed-width="64"
+            :width="240"
+            :collapsed="collapsed"
+            show-trigger
+            @collapse="collapsed = true"
+            @expand="collapsed = false"
+          >
+            <n-space vertical>
+              <n-menu
+                :collapsed="collapsed"
+                :collapsed-width="64"
+                :collapsed-icon-size="22"
+                :options="menuOptions"
+                v-model:value="activeKey"
+              />
+            </n-space>
+          </n-layout-sider>
+          <n-layout>
+            <n-grid :cols="24">
+              <n-gi :span="1">
+                <n-switch class="pdt28 pdb28 pdl14" v-model:value="collapsed" />
+              </n-gi>
+              <n-gi :span="23">
+                <n-breadcrumb separator="/" class="pdt28 pdb28">
+                  <n-breadcrumb-item href="/">首页</n-breadcrumb-item>
+                  <n-breadcrumb-item
+                    ><a href="/">活动管理</a></n-breadcrumb-item
+                  >
+                  <n-breadcrumb-item>活动列表</n-breadcrumb-item>
+                  <n-breadcrumb-item>活动详情</n-breadcrumb-item>
+                </n-breadcrumb>
+              </n-gi>
+            </n-grid>
+            <div class="com">
+              <n-data-table
+                :data="tableData"
+                style="width: 100%"
+                :columns="columns"
+                :pagination="pagination"
+              />
+            </div>
+          </n-layout>
+        </n-layout>
+      </n-gi>
+    </n-grid>
   </div>
 </template>
 <script lang="ts" setup>
-import { ref, reactive } from 'vue'
+import { h, ref, reactive } from 'vue'
 import {
-  Location,
-  Document,
-  Menu as IconMenu,
-  Setting,
-} from '@element-plus/icons'
+  useMessage,
+  NButton,
+  NIcon,
+  PaginationProps,
+  DataTableColumns,
+} from 'naive-ui'
+import {
+  BookOutline as BookIcon,
+  PersonOutline as PersonIcon,
+  WineOutline as WineIcon,
+} from '@vicons/ionicons5'
+
+const message = useMessage()
+
+function renderIcon(icon: any) {
+  return () => h(NIcon, null, { default: () => h(icon) })
+}
+
 interface User {
   name: string
   pwd: string
@@ -88,14 +89,14 @@ interface Table {
   name: string
   address: string
 }
-
-const isCollapse = ref(false)
+const activeKey = ref('whisky')
+const collapsed = ref(false)
 const handleOpen = (key: string, keyPath: string[]) => {
   console.log(key, keyPath)
 }
-const handleClose = ((index: string, indexPath: string[]) => {
+const handleClose = (index: string, indexPath: string[]) => {
   console.log(index, indexPath)
-})
+}
 
 const user: string | null = localStorage.getItem('user')
 
@@ -122,8 +123,105 @@ const tableData = reactive<Table[]>([
     address: '上海市普陀区金沙江路 1516 弄',
   },
 ])
+const menuOptions = [
+  {
+    label: '且听风吟',
+    key: 'hear-the-wind-sing',
+    icon: renderIcon(BookIcon),
+  },
+  {
+    label: '舞，舞，舞',
+    key: 'dance-dance-dance',
+    icon: renderIcon(BookIcon),
+    children: [
+      {
+        type: 'group',
+        label: '人物',
+        key: 'people',
+        children: [
+          {
+            label: '叙事者',
+            key: 'narrator',
+            icon: renderIcon(PersonIcon),
+          },
+          {
+            label: '羊男',
+            key: 'sheep-man',
+            icon: renderIcon(PersonIcon),
+          },
+        ],
+      },
+      {
+        label: '饮品',
+        key: 'beverage',
+        icon: renderIcon(WineIcon),
+        children: [
+          {
+            label: '威士忌',
+            key: 'whisky',
+          },
+        ],
+      },
+      {
+        label: '食物',
+        key: 'food',
+        children: [
+          {
+            label: '三明治',
+            key: 'sandwich',
+          },
+        ],
+      },
+      {
+        label: '过去增多，未来减少',
+        key: 'the-past-increases-the-future-recedes',
+      },
+    ],
+  },
+]
+
+function sendMail(rowData: any) {
+  message.info('send mail to ' + rowData.name)
+}
+
+const columns = reactive<DataTableColumns>([
+  {
+    title: 'Name',
+    key: 'name',
+    align: 'center',
+  },
+  {
+    title: 'Date',
+    key: 'date',
+  },
+  {
+    title: 'Address',
+    key: 'address',
+  },
+  {
+    title: 'Action',
+    key: 'actions',
+    render(row) {
+      return h(
+        NButton,
+        {
+          size: 'small',
+          type: 'primary',
+          onClick: () => sendMail(row),
+        },
+        { default: () => '发送邮件' }
+      )
+    },
+  },
+])
+const pagination = reactive<PaginationProps>({
+  pageSize: 10,
+})
 </script>
 <style lang="less" scoped>
+.app-layout {
+  height: 100vh;
+}
 .el-menu-vertical-demo:not(.el-menu--collapse) {
   width: 200px;
   min-height: 400px;
@@ -158,5 +256,9 @@ const tableData = reactive<Table[]>([
 }
 .pdl28 {
   padding-left: 28px;
+}
+
+.pdl14 {
+  padding-left: 14px;
 }
 </style>
